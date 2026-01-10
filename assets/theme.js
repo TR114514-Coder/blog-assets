@@ -5,6 +5,7 @@ const CONFIG = {
     ENABLE_FONT_COLOR: true,
     BACKGROUND_URL: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
     FONT_COLOR: '#000000',
+    FONT_URL: "https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf",
     FONT_FAMILY: 'sans-serif',
     RAIN_DROP_COUNT: 50,
     RAIN_DROP_SPEED: 20
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (CONFIG.ENABLE_THEME) {
+        loadFont();
         if (currentUrl.includes('/index.html') || currentUrl === "/" || currentUrl.includes('/page')) {
             applyTheme('home');
         } else if (currentUrl.includes('/post/') || currentUrl.includes('/link.html') || currentUrl.includes('/about.html')) {
@@ -31,6 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (currentUrl.includes('/tag.html')) {
         addSearchKeyboardEvent();
+    }
+
+    function loadFont() {
+        if (CONFIG.FONT_URL) {
+            const fontStyle = document.createElement('style');
+            fontStyle.textContent = `
+                @import url('${CONFIG.FONT_URL}');
+            `;
+            document.head.appendChild(fontStyle);
+        }
     }
 
     function createRainEffect() {
@@ -80,6 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyTheme(theme) {
         const style = document.createElement('style');
         
+        const fontFamily = CONFIG.FONT_URL ? 'inherit' : CONFIG.FONT_FAMILY;
+        
         let commonStyles = CONFIG.ENABLE_BACKGROUND ? `
             html {
                 background: url('${CONFIG.BACKGROUND_URL}') no-repeat center center fixed;
@@ -91,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body {
                 margin: 30px auto;
                 font-size: 16px;
-                font-family: ${CONFIG.FONT_FAMILY};
+                font-family: ${fontFamily};
                 line-height: 1.25;
                 background: rgba(255, 255, 255, 0.85);
                 border-radius: 10px;
@@ -139,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .tag-cloud a,
             .tag-list a,
             .category-list a {
-                font-family: ${CONFIG.FONT_FAMILY};
+                font-family: ${fontFamily};
         `;
         
         if (CONFIG.ENABLE_FONT_COLOR) {
@@ -176,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 display: none;
                 margin-left: 3px;
                 white-space: nowrap;
-                font-family: ${CONFIG.FONT_FAMILY};
+                font-family: ${fontFamily};
                 font-weight: bold;
         `;
         
@@ -282,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .subnav-search-input { 
                         border-radius: 2em; 
                         float: unset !important;
-                        font-family: ${CONFIG.FONT_FAMILY};
+                        font-family: ${fontFamily};
                     }
                     .subnav-search-icon { top: 9px; }
                     button.btn.float-left { display: none; }
