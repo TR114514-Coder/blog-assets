@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==================== 配置区域 ====================
     const CONFIG = {
         // 字体和背景设置
-        fontUrl: 'https://blog-assets.traveler.dpdns.org/font/HarmonyOS_Sans_TC_Black.ttf', // 留空使用默认字体
+        fontUrl: 'https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf', // 留空使用默认字体
         backgroundUrlPC: 'https://g-bg-api.traveler.dpdns.org/h', // PC端背景
         backgroundUrlMobile: 'https://g-bg-api.traveler.dpdns.org/v', // 移动端背景
         fontColor: '#000000',
