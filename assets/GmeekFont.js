@@ -1,7 +1,7 @@
 // 简洁版字体应用脚本
 (function() {
   // 字体URL和名称
-  const fontUrl = 'https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf';
+  const fontUrl = 'https://blog-assets.traveler.dpdns.org/font/HarmonyOS_Sans_TC_Black.ttf';
   const fontName = 'CustomFont';
   
   // 创建字体定义
