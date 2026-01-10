@@ -4,17 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const CONFIG = {
         // 字体和背景设置
         fontUrl: 'https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf', // 留空使用默认字体
-        backgroundUrl: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
+        backgroundUrlPC: 'https://g-bg-api.traveler.dpdns.org/h', // PC端背景
+        backgroundUrlMobile: 'https://g-bg-api.traveler.dpdns.org/v', // 移动端背景
         fontColor: '#000000',
         
         // 功能开关
         enableRain: true,
         enableBackground: true,
         enableTheme: true,
-        enableFont: false,
+        enableFont: true,
         enableGlassEffect: true
     };
     // ==================== 配置结束 ====================
+
+    // 设备检测函数
+    const isMobileDevice = () => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
+    // 获取对应的背景URL
+    const getBackgroundUrl = () => {
+        return isMobileDevice() ? CONFIG.backgroundUrlMobile : CONFIG.backgroundUrlPC;
+    };
 
     // 添加字体
     if (CONFIG.enableFont && CONFIG.fontUrl) {
@@ -129,11 +140,12 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
 
-        // 背景设置
+        // 背景设置 - 根据设备类型使用不同的背景
         if (CONFIG.enableBackground) {
+            const backgroundUrl = getBackgroundUrl();
             style.innerHTML += `
                 html {
-                    background: url('${CONFIG.backgroundUrl}') no-repeat center center fixed;
+                    background: url('${backgroundUrl}') no-repeat center center fixed;
                     background-size: cover;
                 }
             `;
@@ -308,4 +320,4 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(btnDescStyle);
         }
     });
-})
+});
