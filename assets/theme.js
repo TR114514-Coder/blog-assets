@@ -61,11 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (CONFIG.enableBackground) {
         const backgroundUrl = getBackgroundUrl();
         style.innerHTML += `
-            html, body {
-                height: 100%;
-                overflow-y: auto; /* 允许垂直滚动 */
-            }
-            
             html {
                 background: url('${backgroundUrl}') no-repeat center center fixed;
                 background-size: cover;
@@ -80,9 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 min-height: calc(100vh - 20px); /* 减去上下外边距 */
                 max-width: 1200px; /* 设置最大宽度 */
                 width: calc(100% - 20px); /* 设置宽度，减去左右外边距 */
-                background-color: #fff; /* 添加背景色，确保内容可见 */
-                overflow: visible; /* 允许内容溢出，由html处理滚动 */
-                position: relative; /* 确保正常文档流 */
             }
             
             /* markdown内容样式 */
