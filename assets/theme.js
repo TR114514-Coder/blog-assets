@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
             font-family: ${CONFIG.enableFont ? `'CustomFont', ` : ''}sans-serif;
             color: ${CONFIG.fontColor};
         }
+        .notranslate {
+            font-family: ${CONFIG.enableFont ? `'CustomFont', ` : ''}sans-serif !important;
+            color: ${CONFIG.fontColor} !important;
+        }
     `;
     document.head.appendChild(fontStyle);
 
