@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 创建样式元素
     let style = document.createElement("style");
     
+    // 添加body缩小样式
+    style.innerHTML += `
+        body {
+            max-width: 85%; /* 从90%缩小到85% */
+            margin: 20px auto; /* 减小边距 */
+            padding: 15px; /* 减小内边距 */
+        }
+    `;
+    
     // 毛玻璃样式和body圆角
     if (CONFIG.enableGlassEffect) {
         style.innerHTML += `
@@ -53,13 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 backdrop-filter: blur(15px) saturate(180%);
                 -webkit-backdrop-filter: blur(15px) saturate(180%);
                 background: rgba(255, 255, 255, 0.1) !important;
-                margin: 30px auto;
-                padding: 20px;
                 border-radius: 15px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
                 overflow: auto;
-                min-height: calc(100vh - 100px);
-                max-width: 90%;
+                min-height: calc(100vh - 80px); /* 减小最小高度 */
             }
             .SideNav, .btn, .title-right .btn, .subnav-search-input {
                 backdrop-filter: blur(10px) saturate(180%);
