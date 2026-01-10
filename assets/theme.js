@@ -68,12 +68,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 background-attachment: fixed;
             }
             
-            /* 给body添加圆角 */
+            /* 给body添加圆角并居中 */
             body {
                 border-radius: 15px;
                 overflow: hidden;
-                margin: 10px; /* 添加外边距让圆角可见 */
+                margin: 10px auto; /* 添加外边距让圆角可见，auto实现水平居中 */
                 min-height: calc(100vh - 20px); /* 减去上下外边距 */
+                max-width: 1200px; /* 设置最大宽度 */
+                width: calc(100% - 20px); /* 设置宽度，减去左右外边距 */
             }
             
             /* markdown内容样式 */
@@ -90,12 +92,22 @@ document.addEventListener('DOMContentLoaded', function() {
             @media (max-width: 768px) {
                 body {
                     border-radius: 10px;
-                    margin: 8px;
+                    margin: 8px auto;
                     min-height: calc(100vh - 16px);
+                    max-width: calc(100% - 16px); /* 移动端使用百分比宽度 */
+                    width: auto; /* 移动端恢复自动宽度 */
                 }
                 
                 .markdown-body img {
                     border-radius: 8px;
+                }
+            }
+            
+            /* 大屏幕居中效果优化 */
+            @media (min-width: 1200px) {
+                body {
+                    margin-left: auto;
+                    margin-right: auto;
                 }
             }
         `;
