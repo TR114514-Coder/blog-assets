@@ -1,22 +1,16 @@
 const CONFIG = {
     ENABLE_THEME: true,
-    ENABLE_RAIN: true,
     ENABLE_BACKGROUND: true,
     ENABLE_FONT_COLOR: true,
+    ENABLE_BLUR: true, // 毛玻璃效果开关
     BACKGROUND_URL: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
     FONT_COLOR: '#000000',
-    FONT_URL: "https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf",
-    FONT_FAMILY: 'sans-serif',
-    RAIN_DROP_COUNT: 50,
-    RAIN_DROP_SPEED: 20
+    FONT_URL: "https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf", // 不用换字体填null
+    FONT_FAMILY: 'sans-serif'
 };
 
 document.addEventListener('DOMContentLoaded', function() {
     const currentUrl = window.location.pathname;
-
-    if (CONFIG.ENABLE_RAIN) {
-        createRainEffect();
-    }
 
     if (CONFIG.ENABLE_THEME) {
         loadFont();
@@ -38,61 +32,33 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadFont() {
         if (CONFIG.FONT_URL) {
             const fontStyle = document.createElement('style');
-            fontStyle.textContent = `
-                @import url('${CONFIG.FONT_URL}');
-            `;
+            fontStyle.textContent = `@import url('${CONFIG.FONT_URL}');`;
             document.head.appendChild(fontStyle);
         }
-    }
-
-    function createRainEffect() {
-        const rainStyle = document.createElement('style');
-        rainStyle.textContent = `
-            * { padding: 0; margin: 0; }
-            #rainBox {
-                position: fixed;
-                top: 0; left: 0;
-                width: 100vw; height: 100vh;
-                pointer-events: none;
-                z-index: 9999;
-            }
-            .rain {
-                position: absolute;
-                width: 2px;
-                height: 50px;
-                background: linear-gradient(rgba(255,255,255,.3), rgba(255,255,255,.6));
-            }
-        `;
-        document.head.appendChild(rainStyle);
-
-        const rainBox = document.createElement('div');
-        rainBox.id = 'rainBox';
-        document.body.appendChild(rainBox);
-
-        setInterval(() => {
-            const rain = document.createElement('div');
-            rain.className = 'rain';
-            rain.style.left = Math.random() * window.innerWidth + 'px';
-            rain.style.opacity = Math.random();
-            rainBox.appendChild(rain);
-
-            let speed = 1;
-            const timer = setInterval(() => {
-                const currentTop = parseInt(rain.style.top) || 0;
-                if (currentTop > window.innerHeight) {
-                    clearInterval(timer);
-                    rainBox.removeChild(rain);
-                }
-                speed++;
-                rain.style.top = (currentTop + speed) + 'px';
-            }, CONFIG.RAIN_DROP_SPEED);
-        }, CONFIG.RAIN_DROP_COUNT);
     }
 
     function applyTheme(theme) {
         const style = document.createElement('style');
         
         const fontFamily = CONFIG.FONT_URL ? 'inherit' : CONFIG.FONT_FAMILY;
+        
+        const blurStyles = CONFIG.ENABLE_BLUR ? `
+            body {
+                backdrop-filter: blur(20px) saturate(180%);
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                background: rgba(255, 255, 255, 0.6) !important;
+            }
+            .btn, .SideNav, .subnav-search-input, .markdown-body .highlight pre, .markdown-body pre, .markdown-alert {
+                backdrop-filter: blur(10px) saturate(180%);
+                -webkit-backdrop-filter: blur(10px) saturate(180%);
+                background: rgba(255, 255, 255, 0.7) !important;
+            }
+            .SideNav-item:hover, .btn:hover {
+                backdrop-filter: blur(15px) saturate(200%);
+                -webkit-backdrop-filter: blur(15px) saturate(200%);
+                background: rgba(195, 228, 227, 0.8) !important;
+            }
+        ` : '';
         
         let commonStyles = CONFIG.ENABLE_BACKGROUND ? `
             html {
@@ -101,17 +67,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         ` : '';
         
+        commonStyles += blurStyles;
+        
         commonStyles += `
             body {
                 margin: 30px auto;
                 font-size: 16px;
                 font-family: ${fontFamily};
                 line-height: 1.25;
-                background: rgba(255, 255, 255, 0.85);
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                 overflow: auto;
         `;
+        
+        if (!CONFIG.ENABLE_BLUR) {
+            commonStyles += `background: rgba(255, 255, 255, 0.85);`;
+        }
         
         if (CONFIG.ENABLE_FONT_COLOR) {
             commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
@@ -182,9 +153,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 margin: 0 3px !important;
                 border-radius: 2em !important;
                 transition: 0.3s !important;
-            }
+        `;
+        
+        if (!CONFIG.ENABLE_BLUR) {
+            commonStyles += `background: rgba(255, 255, 255, 0.8) !important;`;
+        }
+        
+        commonStyles += `}
             .btn:hover {
-                background-color: #3cd2cd !important;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
             .btndescription {
                 display: none;
@@ -232,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     body { padding: 20px; }
                     .SideNav {
-                        background: rgba(255, 255, 255, 0.6);
+                        ${!CONFIG.ENABLE_BLUR ? 'background: rgba(255, 255, 255, 0.6);' : ''}
                         border-radius: 10px;
                         min-width: unset;
                     }
@@ -240,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         transition: 0.5s;
                     }
                     .SideNav-item:hover {
-                        background-color: #c3e4e3;
                         border-radius: 10px;
                         transform: scale(1.02);
                         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -258,7 +235,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     body { max-width: 1100px; min-width: 200px; }
                     .markdown-alert { border-radius: 10px; }
                     .markdown-body .highlight pre, .markdown-body pre {
-                        background: rgba(255, 255, 255, 0.85);
                         border-radius: 10px;
                     }
                     .markdown-body code, .markdown-body tt {
@@ -280,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                     .SideNav {
-                        background: rgba(255, 255, 255, 0.6);
+                        ${!CONFIG.ENABLE_BLUR ? 'background: rgba(255, 255, 255, 0.6);' : ''}
                         border-radius: 10px;
                         min-width: unset;
                     }
@@ -288,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         transition: 0.5s;
                     }
                     .SideNav-item:hover {
-                        background-color: #c3e4e3;
                         border-radius: 10px;
                         transform: scale(1.02);
                         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
