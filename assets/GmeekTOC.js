@@ -23,7 +23,7 @@ function createTOC() {
         tocElement.appendChild(link);
     });
     
-    tocElement.insertAdjacentHTML('beforeend', '<a class="toc-end" onclick="window.scrollTo({top:0,behavior: \'smooth\'});">Top</a>');
+    tocElement.insertAdjacentHTML('beforeend', '<a class="toc-end" onclick="window.scrollTo({top:0,behavior: \'smooth\'});">回到顶部</a>');
     contentContainer.prepend(tocElement);
 }
 
@@ -42,18 +42,30 @@ document.addEventListener("DOMContentLoaded", function() {
         overflow-y: auto;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         max-height: 70vh;
+        z-index: 9999;
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
     .toc-title{
         font-weight: bold;
         text-align: center;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
         padding-bottom: 8px;
+        margin-bottom: 10px;
     }
     .toc-end{
         font-weight: bold;
         text-align: center;
         cursor: pointer;
         visibility: hidden;
+        display: block;
+        margin-top: 10px;
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        border: 1px solid rgba(0,0,0,0.1);
     }  
     .toc a {
         display: block;
@@ -62,13 +74,15 @@ document.addEventListener("DOMContentLoaded", function() {
         padding: 5px 0;
         font-size: 14px;
         line-height: 1.5;
-        border-bottom: 1px solid #e1e4e8;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
     }
     .toc a:last-child {
         border-bottom: none;
     }
     .toc a:hover {
-        background-color:var(--color-select-menu-tap-focus-bg);
+        background-color: rgba(0,0,0,0.05);
+        padding-left: 15px;
     }
 
     @media (max-width: 1249px) 
@@ -80,6 +94,8 @@ document.addEventListener("DOMContentLoaded", function() {
             transform:none;
             padding:10px;
             margin-bottom:20px;
+            width: auto;
+            max-height: none;
         }
     }`;
 
@@ -89,10 +105,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.onscroll = function() {
         const backToTopButton = document.querySelector('.toc-end');
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            backToTopButton.style="visibility: visible;"
-        } else {
-            backToTopButton.style="visibility: hidden;"
+        if (backToTopButton) {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTopButton.style.visibility = "visible";
+            } else {
+                backToTopButton.style.visibility = "hidden";
+            }
         }
     };
 
