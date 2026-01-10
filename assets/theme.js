@@ -5,10 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 背景设置
         backgroundUrlPC: 'https://g-bg-api.traveler.dpdns.org/h', // PC端背景
         backgroundUrlMobile: 'https://g-bg-api.traveler.dpdns.org/v', // 移动端背景
-        enableBackground: true,
-        // 圆角效果设置
-        borderRadius: '15px',  // 圆角大小
-        contentMargin: '20px'  // 内容边距
+        enableBackground: true
     };
     // ==================== 配置结束 ====================
 
@@ -69,31 +66,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 background-size: cover;
                 min-height: 100vh;
                 background-attachment: fixed;
-                padding: 0;
-                margin: 0;
             }
             
-            /* 为body添加圆角效果 */
+            /* 给body添加圆角 */
             body {
-                border-radius: ${CONFIG.borderRadius};
-                margin: ${CONFIG.contentMargin};
-                min-height: calc(100vh - 2 * ${CONFIG.contentMargin});
+                border-radius: 15px;
                 overflow: hidden;
-                background-color: rgba(255, 255, 255, 0.95); /* 轻微白色背景提高可读性 */
+                margin: 10px; /* 添加外边距让圆角可见 */
+                min-height: calc(100vh - 20px); /* 减去上下外边距 */
             }
             
-            /* 移动端适配 */
+            /* 移动端调整 */
             @media (max-width: 768px) {
                 body {
-                    margin: 10px;
-                    border-radius: ${parseInt(CONFIG.borderRadius) / 1.5}px;
+                    border-radius: 10px;
+                    margin: 8px;
+                    min-height: calc(100vh - 16px);
                 }
-            }
-            
-            /* 确保所有主要内容容器背景透明 */
-            .container, .main-content, .content, .post-content,
-            .header, .footer, .sidebar, .widget {
-                background-color: transparent !important;
             }
         `;
     }
