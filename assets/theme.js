@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
             /* 给body添加圆角并居中 */
             body {
                 border-radius: 15px;
-                overflow: hidden;
                 margin: 10px auto; /* 添加外边距让圆角可见，auto实现水平居中 */
                 min-height: calc(100vh - 20px); /* 减去上下外边距 */
                 max-width: 1200px; /* 设置最大宽度 */
