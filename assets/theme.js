@@ -2,18 +2,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ==================== 配置区域 ====================
     const CONFIG = {
+        // 背景设置
+        backgroundUrlPC: 'https://g-bg-api.traveler.dpdns.org/h', // PC端背景
+        backgroundUrlMobile: 'https://g-bg-api.traveler.dpdns.org/v', // 移动端背景
+        enableBackground: true,
+        
         // 功能开关
         enableGlassEffect: true,
         
         // 布局设置
-        bodyWidth: '85%',      // body宽度（百分比）
-        bodyHeight: '85vh',    // body高度（视口高度百分比）
+        bodyWidth: '65%',      // body宽度（百分比）
+        bodyHeight: '70vh',    // body高度（视口高度百分比）
         bodyMaxWidth: '1200px' // body最大宽度
     };
     // ==================== 配置结束 ====================
 
+    // 设备检测函数
+    const isMobileDevice = () => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
+    // 获取对应的背景URL
+    const getBackgroundUrl = () => {
+        return isMobileDevice() ? CONFIG.backgroundUrlMobile : CONFIG.backgroundUrlPC;
+    };
+
     // 创建样式元素
     let style = document.createElement("style");
+    
+    // 背景设置 - 根据设备类型使用不同的背景
+    if (CONFIG.enableBackground) {
+        const backgroundUrl = getBackgroundUrl();
+        style.innerHTML += `
+            html {
+                background: url('${backgroundUrl}') no-repeat center center fixed;
+                background-size: cover;
+                min-height: 100vh;
+                background-attachment: fixed;
+            }
+        `;
+    }
     
     // 毛玻璃样式和body圆角
     if (CONFIG.enableGlassEffect) {
@@ -92,6 +120,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
             div.title-right .btn:hover .btndescription {
                 display: inline;
+            }
+            
+            /* 滚动条样式 */
+            body::-webkit-scrollbar {
+                width: 8px;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            body::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
+            }
+            
+            body::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.5);
             }
         `;
     }
