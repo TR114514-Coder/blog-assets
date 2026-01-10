@@ -76,6 +76,79 @@ document.addEventListener('DOMContentLoaded', function() {
                 min-width: unset;
                 background: rgba(255, 255, 255, 0.08) !important;
             }
+            
+            /* 手机端适配 */
+            @media (max-width: 768px) {
+                body {
+                    margin: 10px auto;
+                    padding: 15px;
+                    max-width: 95%;
+                    min-height: calc(100vh - 20px);
+                }
+                
+                /* 确保右上角按钮容器能正常显示 */
+                .title-right {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    justify-content: center !important;
+                    gap: 5px !important;
+                    margin-top: 10px !important;
+                }
+                
+                /* 调整右上角按钮大小 */
+                .title-right .btn {
+                    height: 36px !important;
+                    min-width: 36px !important;
+                    padding: 6px 10px !important;
+                    font-size: 14px !important;
+                    margin: 2px !important;
+                }
+                
+                /* 手机端隐藏按钮文字描述，只显示图标/文字 */
+                .title-right .btn .btndescription {
+                    display: none !important;
+                }
+                
+                /* 手机端按钮悬停时不显示描述 */
+                .title-right .btn:hover .btndescription {
+                    display: none !important;
+                }
+                
+                /* 确保按钮容器不会超出屏幕 */
+                .title-right {
+                    max-width: 100% !important;
+                    overflow-x: auto !important;
+                    overflow-y: hidden !important;
+                    white-space: nowrap !important;
+                }
+                
+                /* 手机端调整圆角大小 */
+                .SideNav {
+                    border-radius: 10px !important;
+                }
+                
+                /* 手机端调整毛玻璃效果强度 */
+                body {
+                    backdrop-filter: blur(10px) saturate(180%) !important;
+                    -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+                }
+            }
+            
+            /* 小屏手机适配 */
+            @media (max-width: 480px) {
+                body {
+                    margin: 5px auto;
+                    padding: 10px;
+                    border-radius: 10px;
+                }
+                
+                .title-right .btn {
+                    height: 32px !important;
+                    min-width: 32px !important;
+                    padding: 5px 8px !important;
+                    font-size: 12px !important;
+                }
+            }
         `;
     }
 
@@ -128,6 +201,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 div.title-right .btn:hover .btndescription {
                     display: inline;
+                }
+                
+                /* 手机端按钮样式调整 */
+                @media (max-width: 768px) {
+                    div.title-right {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 5px;
+                        margin-top: 10px;
+                    }
+                    
+                    div.title-right .btn {
+                        flex-shrink: 0;
+                    }
                 }
             `;
             document.head.appendChild(btnDescStyle);
