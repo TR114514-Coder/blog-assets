@@ -5,7 +5,7 @@
 
 // Recommended to use absolute path for live2d_path parameter
 // live2d_path 参数建议使用绝对路径
-const live2d_path = 'https://blog-assets.traveler.dpdns.org/live2d';
+const live2d_path = 'https://blog-assets.traveler.dpdns.org/live2d/';
 // const live2d_path = '/dist/';
 
 // Method to encapsulate asynchronous resource loading
@@ -86,3 +86,4 @@ console.log(`\n%cLive2D%cWidget%c\n`, 'padding: 8px; background: #cd3e45; font-w
                 ﾄ-,/  |___./
                 'ｰ'    !_,.:
 */
+
