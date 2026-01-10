@@ -1,42 +1,39 @@
-// 配置文件 - 在这里修改背景图片等设置
 const CONFIG = {
-    // 背景图片URL
+    ENABLE_THEME: true,
+    ENABLE_RAIN: true,
+    ENABLE_BACKGROUND: true,
+    ENABLE_FONT_COLOR: true,
     BACKGROUND_URL: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
-    
-    // 雨滴设置
-    RAIN_DROP_COUNT: 50, // 雨滴数量控制（间隔时间）
-    RAIN_DROP_SPEED: 20  // 雨滴下落速度
+    FONT_COLOR: '#000000',
+    FONT_FAMILY: 'sans-serif',
+    RAIN_DROP_COUNT: 50,
+    RAIN_DROP_SPEED: 20
 };
 
 document.addEventListener('DOMContentLoaded', function() {
     const currentUrl = window.location.pathname;
 
-    // 创建下雨效果（所有页面通用）
-    createRainEffect();
-
-    // 应用主题样式
-    if (currentUrl.includes('/index.html') || currentUrl === "/") {
-        applyTheme('home');
-    } else if (currentUrl.includes('/post/') || currentUrl.includes('/link.html') || currentUrl.includes('/about.html')) {
-        applyTheme('post');
-    } else if (currentUrl.includes('/tag.html')) {
-        applyTheme('tag');
-    } else {
-        console.log('未应用主题');
+    if (CONFIG.ENABLE_RAIN) {
+        createRainEffect();
     }
 
-    // 为所有页面的右上角按钮添加描述
+    if (CONFIG.ENABLE_THEME) {
+        if (currentUrl.includes('/index.html') || currentUrl === "/" || currentUrl.includes('/page')) {
+            applyTheme('home');
+        } else if (currentUrl.includes('/post/') || currentUrl.includes('/link.html') || currentUrl.includes('/about.html')) {
+            applyTheme('post');
+        } else if (currentUrl.includes('/tag.html')) {
+            applyTheme('tag');
+        }
+    }
+
     addButtonDescriptions();
 
-    // 如果是标签页，添加搜索框键盘事件
     if (currentUrl.includes('/tag.html')) {
         addSearchKeyboardEvent();
     }
 
-    // ========== 功能函数 ==========
-
     function createRainEffect() {
-        // 创建样式
         const rainStyle = document.createElement('style');
         rainStyle.textContent = `
             * { padding: 0; margin: 0; }
@@ -56,12 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(rainStyle);
 
-        // 创建容器
         const rainBox = document.createElement('div');
         rainBox.id = 'rainBox';
         document.body.appendChild(rainBox);
 
-        // 生成雨滴
         setInterval(() => {
             const rain = document.createElement('div');
             rain.className = 'rain';
@@ -83,25 +78,83 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function applyTheme(theme) {
-        console.log(`应用${theme}主题`);
-        
         const style = document.createElement('style');
         
-        // 公共样式
-        let commonStyles = `
+        let commonStyles = CONFIG.ENABLE_BACKGROUND ? `
             html {
                 background: url('${CONFIG.BACKGROUND_URL}') no-repeat center center fixed;
                 background-size: cover;
             }
+        ` : '';
+        
+        commonStyles += `
             body {
                 margin: 30px auto;
                 font-size: 16px;
-                font-family: sans-serif;
+                font-family: ${CONFIG.FONT_FAMILY};
                 line-height: 1.25;
                 background: rgba(255, 255, 255, 0.85);
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                 overflow: auto;
+        `;
+        
+        if (CONFIG.ENABLE_FONT_COLOR) {
+            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
+        }
+        
+        commonStyles += `}
+            .markdown-body,
+            .markdown-body h1,
+            .markdown-body h2,
+            .markdown-body h3,
+            .markdown-body h4,
+            .markdown-body h5,
+            .markdown-body h6,
+            .markdown-body p,
+            .markdown-body li,
+            .markdown-body blockquote,
+            .markdown-body table,
+            .markdown-body th,
+            .markdown-body td,
+            .markdown-body code,
+            .markdown-body pre,
+            .markdown-body a:not(.btn),
+            .SideNav,
+            .SideNav-item,
+            .SideNav-item a,
+            .pagination,
+            .pagination a,
+            .pagination span,
+            .pagination em,
+            .article-title,
+            .article-meta,
+            .article-meta a,
+            .article-content,
+            .article-content a:not(.btn),
+            .article-list .article-item,
+            .article-list .article-title a,
+            .article-list .article-meta,
+            .article-list .article-meta a,
+            .tag-cloud a,
+            .tag-list a,
+            .category-list a {
+                font-family: ${CONFIG.FONT_FAMILY};
+        `;
+        
+        if (CONFIG.ENABLE_FONT_COLOR) {
+            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
+        }
+        
+        commonStyles += `}
+            .markdown-body a:not(.btn),
+            .article-content a:not(.btn) {
+                color: ${darkenColor(CONFIG.FONT_COLOR, 20)} !important;
+                text-decoration: underline;
+            }
+            .markdown-body a:not(.btn):hover,
+            .article-content a:not(.btn):hover {
+                color: ${darkenColor(CONFIG.FONT_COLOR, 40)} !important;
             }
             .markdown-body img {
                 border-radius: 10px;
@@ -123,15 +176,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 display: none;
                 margin-left: 3px;
                 white-space: nowrap;
-                color: black;
+                font-family: ${CONFIG.FONT_FAMILY};
                 font-weight: bold;
-            }
+        `;
+        
+        if (CONFIG.ENABLE_FONT_COLOR) {
+            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
+        }
+        
+        commonStyles += `}
             .btn:hover .btndescription {
                 display: inline;
             }
         `;
 
-        // 主题特定样式
         let themeStyles = '';
         
         switch(theme) {
@@ -221,7 +279,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         transform: scale(1.02);
                         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
                     }
-                    .subnav-search-input { border-radius: 2em; float: unset !important; }
+                    .subnav-search-input { 
+                        border-radius: 2em; 
+                        float: unset !important;
+                        font-family: ${CONFIG.FONT_FAMILY};
+                    }
                     .subnav-search-icon { top: 9px; }
                     button.btn.float-left { display: none; }
                     .subnav-search { width: unset; height: 36px; }
@@ -256,5 +318,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+    }
+
+    function darkenColor(color, percent) {
+        if (color.startsWith('#')) {
+            let num = parseInt(color.slice(1), 16);
+            let amt = Math.round(2.55 * percent);
+            let R = (num >> 16) - amt;
+            let G = (num >> 8 & 0x00FF) - amt;
+            let B = (num & 0x0000FF) - amt;
+            
+            R = R < 0 ? 0 : R;
+            G = G < 0 ? 0 : G;
+            B = B < 0 ? 0 : B;
+            
+            return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
+        }
+        else if (color.startsWith('rgb')) {
+            const match = color.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+            if (match) {
+                let R = parseInt(match[1]) - Math.round(2.55 * percent);
+                let G = parseInt(match[2]) - Math.round(2.55 * percent);
+                let B = parseInt(match[3]) - Math.round(2.55 * percent);
+                
+                R = R < 0 ? 0 : R;
+                G = G < 0 ? 0 : G;
+                B = B < 0 ? 0 : B;
+                
+                if (color.startsWith('rgba')) {
+                    const alphaMatch = color.match(/rgba\(.*,\s*([\d.]+)\)/);
+                    const alpha = alphaMatch ? alphaMatch[1] : 1;
+                    return `rgba(${R}, ${G}, ${B}, ${alpha})`;
+                } else {
+                    return `rgb(${R}, ${G}, ${B})`;
+                }
+            }
+        }
+        
+        return color;
     }
 });
