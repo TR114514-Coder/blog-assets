@@ -1,2 +1,1 @@
-"# blog-assets" 
 # blog-assets
