@@ -76,12 +76,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 min-height: calc(100vh - 20px); /* 减去上下外边距 */
             }
             
+            /* markdown内容样式 */
+            .markdown-body img {
+                border-radius: 10px;
+                border: 2px solid #a3e0e4;
+            }
+
+            .markdown-alert {
+                border-radius: 10px;
+            }
+            
             /* 移动端调整 */
             @media (max-width: 768px) {
                 body {
                     border-radius: 10px;
                     margin: 8px;
                     min-height: calc(100vh - 16px);
+                }
+                
+                .markdown-body img {
+                    border-radius: 8px;
                 }
             }
         `;
