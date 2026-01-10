@@ -67,26 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: rgba(255, 255, 255, 0.15) !important;
                 border: 1px solid rgba(255, 255, 255, 0.125) !important;
             }
-            /* 为代码块添加毛玻璃效果 */
-            pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
-                backdrop-filter: blur(10px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-                background: rgba(255, 255, 255, 0.15) !important;
-                border: 1px solid rgba(255, 255, 255, 0.125) !important;
-                border-radius: 10px !important;
-                padding: 15px !important;
-                overflow-x: auto !important;
-            }
-            /* 代码行内样式 */
-            .markdown-body code, .markdown-body tt {
-                backdrop-filter: blur(10px) saturate(180%) !important;
-                -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-                background: rgba(255, 255, 255, 0.15) !important;
-                border: 1px solid rgba(255, 255, 255, 0.125) !important;
-                border-radius: 4px !important;
-                padding: 2px 6px !important;
-                font-size: 85% !important;
-            }
             .btn:hover {
                 background: rgba(255, 255, 255, 0.25) !important;
                 border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -169,12 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     padding-bottom: 0 !important;
                     margin-bottom: 0 !important;
                 }
-                
-                /* 手机端代码块调整 */
-                pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
-                    padding: 10px !important;
-                    font-size: 14px !important;
-                }
             }
             
             /* 小屏手机适配 */
@@ -196,13 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .markdown-body {
                     max-width: 100% !important;
                     overflow-wrap: break-word !important;
-                }
-                
-                /* 小屏手机代码块调整 */
-                pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
-                    padding: 8px !important;
-                    font-size: 13px !important;
-                    border-radius: 8px !important;
                 }
             }
             
