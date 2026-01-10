@@ -76,13 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 min-width: unset;
                 background: rgba(255, 255, 255, 0.08) !important;
             }
-            .SideNav-item:hover {
-                background-color: rgba(195, 228, 227, 0.3) !important;
-                border-radius: 10px;
-                transform: scale(1.02);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-            .SideNav-item { transition: 0.3s; }
         `;
     }
 
