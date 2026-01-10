@@ -1,349 +1,311 @@
-const CONFIG = {
-    ENABLE_THEME: true,
-    ENABLE_BACKGROUND: true,
-    ENABLE_FONT_COLOR: true,
-    ENABLE_BLUR: true, // 毛玻璃效果开关
-    BACKGROUND_URL: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
-    FONT_COLOR: '#000000',
-    FONT_URL: "https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf", // 不用换字体填null
-    FONT_FAMILY: 'sans-serif'
-};
-
 document.addEventListener('DOMContentLoaded', function() {
-    const currentUrl = window.location.pathname;
+    
+    // ==================== 配置区域 ====================
+    const CONFIG = {
+        // 字体和背景设置
+        fontUrl: 'https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf', // 留空使用默认字体
+        backgroundUrl: 'https://img.154451.xyz/file/a2262c314f6a8bd592eba.jpg',
+        fontColor: '#000000',
+        
+        // 功能开关
+        enableRain: true,
+        enableBackground: true,
+        enableTheme: true,
+        enableFont: false,
+        enableGlassEffect: true
+    };
+    // ==================== 配置结束 ====================
 
-    if (CONFIG.ENABLE_THEME) {
-        loadFont();
-        if (currentUrl.includes('/index.html') || currentUrl === "/" || currentUrl.includes('/page')) {
-            applyTheme('home');
-        } else if (currentUrl.includes('/post/') || currentUrl.includes('/link.html') || currentUrl.includes('/about.html')) {
-            applyTheme('post');
-        } else if (currentUrl.includes('/tag.html')) {
-            applyTheme('tag');
-        }
+    // 添加字体
+    if (CONFIG.enableFont && CONFIG.fontUrl) {
+        let fontLink = document.createElement('link');
+        fontLink.href = CONFIG.fontUrl;
+        fontLink.rel = 'stylesheet';
+        document.head.appendChild(fontLink);
     }
 
-    addButtonDescriptions();
+    // 添加全局字体样式
+    let fontStyle = document.createElement('style');
+    fontStyle.innerHTML = `
+        * {
+            font-family: ${CONFIG.enableFont ? `'CustomFont', ` : ''}sans-serif;
+            color: ${CONFIG.fontColor};
+        }
+    `;
+    document.head.appendChild(fontStyle);
 
-    if (currentUrl.includes('/tag.html')) {
-        addSearchKeyboardEvent();
+    // 下雨效果
+    if (CONFIG.enableRain) {
+        let rainstyle = document.createElement('style');
+        rainstyle.innerHTML = `
+            * { padding: 0; margin: 0; }
+            .raincontent { width: 100%; height: 100%; }
+            #rainBox {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                pointer-events: none;
+                z-index: -1;
+            }
+            .rain {
+                position: absolute;
+                width: 2px;
+                height: 50px;
+                background: linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.6));
+            }
+        `;
+        document.head.appendChild(rainstyle);
+
+        let raincontent = document.createElement('div');
+        raincontent.classList.add('raincontent');
+        let rainBox = document.createElement('div');
+        rainBox.id = 'rainBox';
+        raincontent.appendChild(rainBox);
+        document.body.appendChild(raincontent);
+
+        let box = document.getElementById('rainBox');
+        let boxHeight = box.clientHeight;
+        let boxWidth = box.clientWidth;
+
+        window.onload = function () {
+            boxHeight = box.clientHeight;
+            boxWidth = box.clientWidth;
+        };
+
+        window.onresize = function () {
+            boxHeight = box.clientHeight;
+            boxWidth = box.clientWidth;
+        };
+
+        setInterval(() => {
+            let rain = document.createElement('div');
+            rain.classList.add('rain');
+            rain.style.top = '0px';
+            rain.style.left = Math.random() * boxWidth + 'px';
+            rain.style.opacity = Math.random();
+            box.appendChild(rain);
+
+            let race = 1;
+            let timer = setInterval(() => {
+                if (parseInt(rain.style.top) > boxHeight) {
+                    clearInterval(timer);
+                    box.removeChild(rain);
+                }
+                race++;
+                rain.style.top = parseInt(rain.style.top) + race + 'px';
+            }, 20);
+        }, 50);
     }
 
-    function loadFont() {
-        if (CONFIG.FONT_URL) {
-            const fontStyle = document.createElement('style');
-            fontStyle.textContent = `@import url('${CONFIG.FONT_URL}');`;
-            document.head.appendChild(fontStyle);
-        }
-    }
+    // 判断URL应用主题
+    if (CONFIG.enableTheme) {
+        let currentUrl = window.location.pathname;
+        let isHomePage = currentUrl.includes('/index.html') || currentUrl === "/" || currentUrl.includes('/page');
+        let isArticlePage = currentUrl.includes('/post/') || currentUrl.includes('/link.html') || currentUrl.includes('/about.html');
+        let isTagPage = currentUrl.includes('/tag.html');
 
-    function applyTheme(theme) {
-        const style = document.createElement('style');
+        let style = document.createElement("style");
         
-        const fontFamily = CONFIG.FONT_URL ? 'inherit' : CONFIG.FONT_FAMILY;
-        
-        const blurStyles = CONFIG.ENABLE_BLUR ? `
-            body {
-                backdrop-filter: blur(20px) saturate(180%);
-                -webkit-backdrop-filter: blur(20px) saturate(180%);
-                background: rgba(255, 255, 255, 0.6) !important;
-            }
-            .btn, .SideNav, .subnav-search-input, .markdown-body .highlight pre, .markdown-body pre, .markdown-alert {
-                backdrop-filter: blur(10px) saturate(180%);
-                -webkit-backdrop-filter: blur(10px) saturate(180%);
-                background: rgba(255, 255, 255, 0.7) !important;
-            }
-            .SideNav-item:hover, .btn:hover {
-                backdrop-filter: blur(15px) saturate(200%);
-                -webkit-backdrop-filter: blur(15px) saturate(200%);
-                background: rgba(195, 228, 227, 0.8) !important;
-            }
-        ` : '';
-        
-        let commonStyles = CONFIG.ENABLE_BACKGROUND ? `
-            html {
-                background: url('${CONFIG.BACKGROUND_URL}') no-repeat center center fixed;
-                background-size: cover;
-            }
-        ` : '';
-        
-        commonStyles += blurStyles;
-        
-        commonStyles += `
-            body {
-                margin: 30px auto;
-                font-size: 16px;
-                font-family: ${fontFamily};
-                line-height: 1.25;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-                overflow: auto;
-        `;
-        
-        if (!CONFIG.ENABLE_BLUR) {
-            commonStyles += `background: rgba(255, 255, 255, 0.85);`;
-        }
-        
-        if (CONFIG.ENABLE_FONT_COLOR) {
-            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
-        }
-        
-        commonStyles += `}
-            .markdown-body,
-            .markdown-body h1,
-            .markdown-body h2,
-            .markdown-body h3,
-            .markdown-body h4,
-            .markdown-body h5,
-            .markdown-body h6,
-            .markdown-body p,
-            .markdown-body li,
-            .markdown-body blockquote,
-            .markdown-body table,
-            .markdown-body th,
-            .markdown-body td,
-            .markdown-body code,
-            .markdown-body pre,
-            .markdown-body a:not(.btn),
-            .SideNav,
-            .SideNav-item,
-            .SideNav-item a,
-            .pagination,
-            .pagination a,
-            .pagination span,
-            .pagination em,
-            .article-title,
-            .article-meta,
-            .article-meta a,
-            .article-content,
-            .article-content a:not(.btn),
-            .article-list .article-item,
-            .article-list .article-title a,
-            .article-list .article-meta,
-            .article-list .article-meta a,
-            .tag-cloud a,
-            .tag-list a,
-            .category-list a {
-                font-family: ${fontFamily};
-        `;
-        
-        if (CONFIG.ENABLE_FONT_COLOR) {
-            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
-        }
-        
-        commonStyles += `}
-            .markdown-body a:not(.btn),
-            .article-content a:not(.btn) {
-                color: ${darkenColor(CONFIG.FONT_COLOR, 20)} !important;
-                text-decoration: underline;
-            }
-            .markdown-body a:not(.btn):hover,
-            .article-content a:not(.btn):hover {
-                color: ${darkenColor(CONFIG.FONT_COLOR, 40)} !important;
-            }
-            .markdown-body img {
-                border-radius: 10px;
-                border: 2px solid #a3e0e4;
-            }
-            .btn {
-                display: inline-flex !important;
-                align-items: center !important;
-                width: auto !important;
-                height: 40px !important;
-                margin: 0 3px !important;
-                border-radius: 2em !important;
-                transition: 0.3s !important;
-        `;
-        
-        if (!CONFIG.ENABLE_BLUR) {
-            commonStyles += `background: rgba(255, 255, 255, 0.8) !important;`;
-        }
-        
-        commonStyles += `}
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
-            .btndescription {
-                display: none;
-                margin-left: 3px;
-                white-space: nowrap;
-                font-family: ${fontFamily};
-                font-weight: bold;
-        `;
-        
-        if (CONFIG.ENABLE_FONT_COLOR) {
-            commonStyles += `color: ${CONFIG.FONT_COLOR} !important;`;
-        }
-        
-        commonStyles += `}
-            .btn:hover .btndescription {
-                display: inline;
-            }
-        `;
-
-        let themeStyles = '';
-        
-        switch(theme) {
-            case 'home':
-                themeStyles = `
-                    .blogTitle { display: unset; }
-                    #header { height: 340px; }
-                    #header h1 {
-                        position: absolute;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                    }
-                    .title-right {
-                        margin-top: 295px;
-                        margin-left: 50%;
-                        transform: translateX(-50%);
-                    }
-                    .avatar { width: 200px; height: 200px; }
-                    #header h1 a {
-                        margin-top: 30px;
-                        font-family: fantasy;
-                        margin-left: unset;
-                    }
-                    body { padding: 20px; }
-                    .SideNav {
-                        ${!CONFIG.ENABLE_BLUR ? 'background: rgba(255, 255, 255, 0.6);' : ''}
-                        border-radius: 10px;
-                        min-width: unset;
-                    }
-                    .SideNav-item {
-                        transition: 0.5s;
-                    }
-                    .SideNav-item:hover {
-                        border-radius: 10px;
-                        transform: scale(1.02);
-                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-                    }
-                    .pagination a:hover, .pagination span:hover, .pagination em:hover {
-                        border-color: rebeccapurple;
-                    }
-                `;
-                break;
-                
-            case 'post':
-                themeStyles = `
-                    @media (min-width: 1001px) { body { padding: 45px; } }
-                    @media (max-width: 1000px) { body { padding: 20px; } }
-                    body { max-width: 1100px; min-width: 200px; }
-                    .markdown-alert { border-radius: 10px; }
-                    .markdown-body .highlight pre, .markdown-body pre {
-                        border-radius: 10px;
-                    }
-                    .markdown-body code, .markdown-body tt {
-                        background-color: rgb(141 150 161 / 20%);
-                    }
-                    video { border-radius: 10px; }
-                `;
-                break;
-                
-            case 'tag':
-                themeStyles = `
-                    body { padding: 20px; }
-                    .title-right { align-items: flex-end; }
-                    @media (max-width: 600px) {
-                        .tagTitle {
-                            display: unset;
-                            font-size: 14px;
-                            white-space: unset;
-                        }
-                    }
-                    .SideNav {
-                        ${!CONFIG.ENABLE_BLUR ? 'background: rgba(255, 255, 255, 0.6);' : ''}
-                        border-radius: 10px;
-                        min-width: unset;
-                    }
-                    .SideNav-item {
-                        transition: 0.5s;
-                    }
-                    .SideNav-item:hover {
-                        border-radius: 10px;
-                        transform: scale(1.02);
-                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-                    }
-                    .subnav-search-input { 
-                        border-radius: 2em; 
-                        float: unset !important;
-                        font-family: ${fontFamily};
-                    }
-                    .subnav-search-icon { top: 9px; }
-                    button.btn.float-left { display: none; }
-                    .subnav-search { width: unset; height: 36px; }
-                `;
-                break;
+        // 公共毛玻璃样式
+        if (CONFIG.enableGlassEffect) {
+            style.innerHTML += `
+                body {
+                    backdrop-filter: blur(15px) saturate(180%);
+                    -webkit-backdrop-filter: blur(15px) saturate(180%);
+                    background: rgba(255, 255, 255, 0.1) !important;
+                }
+                .SideNav, .btn, .title-right .btn, .subnav-search-input {
+                    backdrop-filter: blur(10px) saturate(180%);
+                    -webkit-backdrop-filter: blur(10px) saturate(180%);
+                    background: rgba(255, 255, 255, 0.15) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.125) !important;
+                }
+                .btn:hover {
+                    background: rgba(255, 255, 255, 0.25) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                }
+            `;
         }
 
-        style.textContent = commonStyles + themeStyles;
+        // 背景设置
+        if (CONFIG.enableBackground) {
+            style.innerHTML += `
+                html {
+                    background: url('${CONFIG.backgroundUrl}') no-repeat center center fixed;
+                    background-size: cover;
+                }
+            `;
+        }
+
+        if (isHomePage) {
+            style.innerHTML += `
+                .blogTitle { display: unset; }
+                #header { height: 340px; }
+                #header h1 {
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .title-right {
+                    margin: unset;
+                    margin-top: 295px;
+                    margin-left: 50%;
+                    transform: translateX(-50%);
+                }
+                .avatar { width: 200px; height: 200px; }
+                #header h1 a {
+                    margin-top: 30px;
+                    font-family: fantasy;
+                    margin-left: unset;
+                }
+                body {
+                    margin: 30px auto;
+                    padding: 20px;
+                    border-radius: 15px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    overflow: auto;
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.8)'};
+                }
+                .SideNav {
+                    border-radius: 15px;
+                    min-width: unset;
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.6)'};
+                }
+                .SideNav-item:hover {
+                    background-color: ${CONFIG.enableGlassEffect ? 'rgba(195, 228, 227, 0.3)' : '#c3e4e3'};
+                    border-radius: 10px;
+                    transform: scale(1.02);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                }
+                .SideNav-item { transition: 0.3s; }
+                .pagination a:hover, .pagination span:hover, .pagination em:hover {
+                    border-color: rebeccapurple;
+                }
+            `;
+        } else if (isArticlePage) {
+            style.innerHTML += `
+                body {
+                    min-width: 200px;
+                    max-width: 1100px;
+                    margin: 30px auto;
+                    border-radius: 15px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    overflow: auto;
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.85)'};
+                }
+                @media (min-width: 1001px) { body { padding: 45px; } }
+                @media (max-width: 1000px) { body { padding: 20px; } }
+                .markdown-body img {
+                    border-radius: 10px;
+                    border: 2px solid rgba(163, 224, 228, 0.5);
+                }
+                .markdown-alert { border-radius: 10px; }
+                .markdown-body .highlight pre, .markdown-body pre {
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.85)'};
+                    border-radius: 10px;
+                }
+                .markdown-body code, .markdown-body tt {
+                    background-color: rgba(141, 150, 161, 0.2);
+                }
+                video { border-radius: 10px; }
+            `;
+        } else if (isTagPage) {
+            style.innerHTML += `
+                .title-right { align-items: flex-end; }
+                @media (max-width: 600px) {
+                    .tagTitle {
+                        display: unset;
+                        font-size: 14px;
+                        white-space: unset;
+                    }
+                }
+                body {
+                    margin: 30px auto;
+                    padding: 20px;
+                    border-radius: 15px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    overflow: auto;
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.8)'};
+                }
+                .SideNav {
+                    border-radius: 15px;
+                    min-width: unset;
+                    background: ${CONFIG.enableGlassEffect ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.6)'};
+                }
+                .SideNav-item:hover {
+                    background-color: ${CONFIG.enableGlassEffect ? 'rgba(195, 228, 227, 0.3)' : '#c3e4e3'};
+                    border-radius: 10px;
+                    transform: scale(1.02);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                }
+                .SideNav-item { transition: 0.3s; }
+                .subnav-search-input {
+                    border-radius: 2em;
+                    float: unset !important;
+                }
+                .subnav-search-icon { top: 9px; }
+                button.btn.float-left { display: none; }
+                .subnav-search { width: unset; height: 36px; }
+            `;
+            
+            let input = document.querySelector(".form-control.subnav-search-input.float-left");
+            let button = document.querySelector(".btn.float-left");
+            if (input && button) {
+                input.addEventListener("keyup", function(event) {
+                    if (event.keyCode === 13) {
+                        event.preventDefault();
+                        button.click();
+                    }
+                });
+            }
+        }
+
         document.head.appendChild(style);
     }
 
-    function addButtonDescriptions() {
-        document.querySelectorAll(".title-right a.btn").forEach(button => {
-            const title = button.getAttribute('title');
-            if (title && !button.querySelector('.btndescription')) {
-                const desc = document.createElement('span');
-                desc.className = 'btndescription';
-                desc.textContent = title;
-                button.appendChild(desc);
-            }
-        });
-    }
-
-    function addSearchKeyboardEvent() {
-        const input = document.querySelector(".form-control.subnav-search-input.float-left");
-        const button = document.querySelector(".btn.float-left");
-        
-        if (input && button) {
-            input.addEventListener("keyup", function(event) {
-                if (event.key === 'Enter') {
-                    button.click();
-                }
-            });
-        }
-    }
-
-    function darkenColor(color, percent) {
-        if (color.startsWith('#')) {
-            let num = parseInt(color.slice(1), 16);
-            let amt = Math.round(2.55 * percent);
-            let R = (num >> 16) - amt;
-            let G = (num >> 8 & 0x00FF) - amt;
-            let B = (num & 0x0000FF) - amt;
-            
-            R = R < 0 ? 0 : R;
-            G = G < 0 ? 0 : G;
-            B = B < 0 ? 0 : B;
-            
-            return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
-        }
-        else if (color.startsWith('rgb')) {
-            const match = color.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-            if (match) {
-                let R = parseInt(match[1]) - Math.round(2.55 * percent);
-                let G = parseInt(match[2]) - Math.round(2.55 * percent);
-                let B = parseInt(match[3]) - Math.round(2.55 * percent);
-                
-                R = R < 0 ? 0 : R;
-                G = G < 0 ? 0 : G;
-                B = B < 0 ? 0 : B;
-                
-                if (color.startsWith('rgba')) {
-                    const alphaMatch = color.match(/rgba\(.*,\s*([\d.]+)\)/);
-                    const alpha = alphaMatch ? alphaMatch[1] : 1;
-                    return `rgba(${R}, ${G}, ${B}, ${alpha})`;
-                } else {
-                    return `rgb(${R}, ${G}, ${B})`;
-                }
-            }
+    // 右上角按钮处理
+    let topright_buttons = document.querySelectorAll(".title-right a.btn");
+    topright_buttons.forEach(button => {
+        let title = button.getAttribute('title');
+        if (title) {
+            let btndescription = document.createElement('span');
+            btndescription.className = 'btndescription';
+            btndescription.textContent = title;
+            button.appendChild(btndescription);
         }
         
-        return color;
-    }
-});
+        // 统一按钮样式
+        button.style.cssText = `
+            display: inline-flex;
+            align-items: center;
+            width: auto;
+            height: 40px;
+            margin: 0 3px;
+            border-radius: 2em !important;
+            transition: 0.3s;
+        `;
+        
+        // 添加按钮描述样式
+        if (!document.querySelector('#btnDescStyle')) {
+            let btnDescStyle = document.createElement('style');
+            btnDescStyle.id = 'btnDescStyle';
+            btnDescStyle.innerHTML = `
+                div.title-right .btn .btndescription {
+                    display: none;
+                    margin-left: 3px;
+                    white-space: nowrap;
+                    font-weight: bold;
+                }
+                div.title-right .btn:hover .btndescription {
+                    display: inline;
+                }
+            `;
+            document.head.appendChild(btnDescStyle);
+        }
+    });
+})
