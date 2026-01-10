@@ -67,6 +67,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: rgba(255, 255, 255, 0.15) !important;
                 border: 1px solid rgba(255, 255, 255, 0.125) !important;
             }
+            /* 为代码块添加毛玻璃效果 */
+            pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
+                backdrop-filter: blur(10px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+                background: rgba(255, 255, 255, 0.15) !important;
+                border: 1px solid rgba(255, 255, 255, 0.125) !important;
+                border-radius: 10px !important;
+                padding: 15px !important;
+                overflow-x: auto !important;
+            }
+            /* 代码行内样式 */
+            .markdown-body code, .markdown-body tt {
+                backdrop-filter: blur(10px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+                background: rgba(255, 255, 255, 0.15) !important;
+                border: 1px solid rgba(255, 255, 255, 0.125) !important;
+                border-radius: 4px !important;
+                padding: 2px 6px !important;
+                font-size: 85% !important;
+            }
             .btn:hover {
                 background: rgba(255, 255, 255, 0.25) !important;
                 border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -75,6 +95,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 border-radius: 15px;
                 min-width: unset;
                 background: rgba(255, 255, 255, 0.08) !important;
+            }
+            
+            /* 防止文章页内容被截断 */
+            .markdown-body, .post-body {
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* 确保body高度适应内容 */
+            body {
+                position: relative;
             }
             
             /* 手机端适配 */
@@ -132,6 +163,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     backdrop-filter: blur(10px) saturate(180%) !important;
                     -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
                 }
+                
+                /* 手机端文章页调整 */
+                .markdown-body {
+                    padding-bottom: 0 !important;
+                    margin-bottom: 0 !important;
+                }
+                
+                /* 手机端代码块调整 */
+                pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
+                    padding: 10px !important;
+                    font-size: 14px !important;
+                }
             }
             
             /* 小屏手机适配 */
@@ -148,6 +191,40 @@ document.addEventListener('DOMContentLoaded', function() {
                     padding: 5px 8px !important;
                     font-size: 12px !important;
                 }
+                
+                /* 修复文章页内容溢出 */
+                .markdown-body {
+                    max-width: 100% !important;
+                    overflow-wrap: break-word !important;
+                }
+                
+                /* 小屏手机代码块调整 */
+                pre.notranslate, code.notranslate, .highlight pre, .markdown-body pre {
+                    padding: 8px !important;
+                    font-size: 13px !important;
+                    border-radius: 8px !important;
+                }
+            }
+            
+            /* 文章页特定调整 - 防止底部多余空白 */
+            .post {
+                padding-bottom: 20px !important;
+            }
+            
+            .post .markdown-body::after {
+                content: '';
+                display: block;
+                height: 1px;
+                clear: both;
+            }
+            
+            /* 文章页评论区域调整 */
+            .post-comment, #comments, .comment-box {
+                margin-top: 20px !important;
+                padding-top: 20px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+                position: relative;
+                z-index: 2;
             }
         `;
     }
@@ -221,4 +298,32 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(btnDescStyle);
         }
     });
+    
+    // 文章页底部额外处理
+    setTimeout(() => {
+        // 检查是否是文章页
+        let isArticlePage = window.location.pathname.includes('/post/') || 
+                           document.querySelector('.post, .article, .markdown-body');
+        
+        if (isArticlePage) {
+            // 移除文章页可能的多余空白
+            let articleContent = document.querySelector('.markdown-body, .post-content, .article-content');
+            if (articleContent) {
+                // 确保文章内容不产生额外高度
+                articleContent.style.marginBottom = '0';
+                articleContent.style.paddingBottom = '0';
+                
+                // 检查最后一个元素是否是空白
+                let lastChild = articleContent.lastElementChild;
+                if (lastChild && 
+                    (lastChild.tagName === 'P' || lastChild.tagName === 'DIV') && 
+                    lastChild.innerHTML.trim() === '') {
+                    lastChild.style.display = 'none';
+                }
+            }
+            
+            // 确保body高度正确
+            document.body.style.minHeight = 'auto';
+        }
+    }, 100);
 });
