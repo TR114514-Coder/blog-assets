@@ -1,170 +1,268 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // ==================== 配置区域 ====================
-    const CONFIG = {
-        // 背景设置
-        backgroundUrlPC: 'https://g-bg-api.traveler.dpdns.org/h', // PC端背景
-        backgroundUrlMobile: 'https://g-bg-api.traveler.dpdns.org/v', // 移动端背景
-        enableBackground: true,
-        
-        // 功能开关
-        enableGlassEffect: true,
-        
-        // 布局设置
-        bodyWidth: '65%',      // body宽度（百分比）
-        bodyHeight: '70vh',    // body高度（视口高度百分比）
-        bodyMaxWidth: '1200px' // body最大宽度
-    };
-    // ==================== 配置结束 ====================
+(function () {
+  // 严格的重复执行保护
+  if (window.__TiengmingModernized) {
+    return;
+  }
+  
+  console.log("🍏 TiengmingModern 插件启动中... https://code.buxiantang.top/");
 
-    // 设备检测函数
-    const isMobileDevice = () => {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    };
-
-    // 获取对应的背景URL
-    const getBackgroundUrl = () => {
-        return isMobileDevice() ? CONFIG.backgroundUrlMobile : CONFIG.backgroundUrlPC;
-    };
-
-    // 创建样式元素
-    let style = document.createElement("style");
-    
-    // 背景设置 - 根据设备类型使用不同的背景
-    if (CONFIG.enableBackground) {
-        const backgroundUrl = getBackgroundUrl();
-        style.innerHTML += `
-            html {
-                background: url('${backgroundUrl}') no-repeat center center fixed;
-                background-size: cover;
-                min-height: 100vh;
-                background-attachment: fixed;
-            }
-        `;
+  const themeColors = {
+    light: {
+      bgGradient: "linear-gradient(135deg, #f4f4f4, #fef2f2, #f4f0ff)",
+      cardBg: "rgba(255,255,255,0.25)",
+      cardBorder: "1px solid rgba(255,255,255,0.2)",
+      title: "#1c1c1e",
+      meta: "#888"
+    },
+    dark: {
+      bgGradient: "linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)",
+      cardBg: "rgba(32,32,32,0.3)",
+      cardBorder: "1px solid rgba(255,255,255,0.08)",
+      title: "#eee",
+      meta: "#bbb"
     }
-    
-    // 毛玻璃样式和body圆角
-    if (CONFIG.enableGlassEffect) {
-        style.innerHTML += `
-            /* 主要body样式 */
-            body {
-                backdrop-filter: blur(15px) saturate(180%);
-                -webkit-backdrop-filter: blur(15px) saturate(180%);
-                background: rgba(255, 255, 255, 0.1) !important;
-                margin: 30px auto;
-                padding: 25px;
-                border-radius: 15px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                overflow: auto;
-                min-height: ${CONFIG.bodyHeight};
-                max-height: ${CONFIG.bodyHeight};
-                width: ${CONFIG.bodyWidth};
-                max-width: ${CONFIG.bodyMaxWidth};
-                position: relative;
-            }
-            
-            /* 优化内容区域样式 */
-            body > *:not(.title-right) {
-                font-size: 0.95em;
-            }
-            
-            /* 右上角按钮容器样式 */
-            .title-right {
-                position: absolute;
-                top: 25px;
-                right: 25px;
-                z-index: 1000;
-            }
-            
-            /* 按钮样式 */
-            .title-right a.btn {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: auto;
-                height: 40px;
-                margin: 0 3px;
-                padding: 0 15px;
-                border-radius: 2em !important;
-                transition: 0.3s;
-                backdrop-filter: blur(10px) saturate(180%);
-                -webkit-backdrop-filter: blur(10px) saturate(180%);
-                background: rgba(255, 255, 255, 0.15) !important;
-                border: 1px solid rgba(255, 255, 255, 0.125) !important;
-                text-decoration: none;
-                color: #333;
-                font-weight: bold;
-            }
-            
-            .title-right a.btn:hover {
-                background: rgba(255, 255, 255, 0.25) !important;
-                border: 1px solid rgba(255, 255, 255, 0.2) !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-            
-            /* 按钮图标样式 */
-            .title-right a.btn i {
-                font-size: 16px;
-                margin-right: 0;
-            }
-            
-            /* 按钮描述文字样式 */
-            div.title-right .btn .btndescription {
-                display: none;
-                margin-left: 8px;
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            
-            div.title-right .btn:hover .btndescription {
-                display: inline;
-            }
-            
-            /* 滚动条样式 */
-            body::-webkit-scrollbar {
-                width: 8px;
-                background: rgba(255, 255, 255, 0.1);
-            }
-            
-            body::-webkit-scrollbar-thumb {
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 4px;
-            }
-            
-            body::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 255, 255, 0.5);
-            }
-        `;
-    }
+  };
 
+  function getEffectiveMode() {
+    const raw = document.documentElement.getAttribute("data-color-mode");
+    if (raw === "light" || raw === "dark") return raw;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function getTextColor(bg) {
+    const rgb = bg.match(/\d+/g);
+    if (!rgb) return "#fff";
+    const [r, g, b] = rgb.map(Number);
+    const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return l > 0.6 ? "#000" : "#fff";
+  }
+
+  // 标签点击处理函数
+  window.handleTagClick = function(event, tagName) {
+    event.preventDefault();
+    event.stopPropagation();
+    const tagUrl = `tag.html#${encodeURIComponent(tagName)}`;
+    window.location.href = tagUrl;
+  };
+
+  // 初始化背景和样式
+  function initializeBackground() {
+    const existingBg = document.querySelector('.herobgcolor');
+    if (existingBg) existingBg.remove();
+
+    const bg = document.createElement("div");
+    bg.className = "herobgcolor";
+    document.body.appendChild(bg);
+
+    const existingStyle = document.querySelector('#tiengming-modern-styles');
+    if (existingStyle) existingStyle.remove();
+
+    const style = document.createElement("style");
+    style.id = 'tiengming-modern-styles';
+    style.textContent = `
+      .herobgcolor {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: -1;
+        background-size: 600% 600%;
+        animation: hueflow 30s ease infinite;
+        transition: background 0.6s ease;
+      }
+      @keyframes hueflow {
+        0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
+        50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
+        100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
+      }
+      .post-tag {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 2px 6px;
+        margin-right: 4px;
+        font-size: 0.8em;
+        display: inline-block;
+      }
+      .post-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        opacity: 0.8;
+      }
+    `;
     document.head.appendChild(style);
+    return bg;
+  }
 
-    // 处理右上角按钮
-    let toprightButtons = document.querySelectorAll(".title-right a.btn");
-    toprightButtons.forEach(button => {
-        // 移除按钮原有的内联样式
-        button.removeAttribute("style");
-        
-        // 添加按钮描述（如果按钮有title属性）
-        let title = button.getAttribute('title');
-        if (title) {
-            // 检查是否已经有描述元素
-            let existingDesc = button.querySelector('.btndescription');
-            if (!existingDesc) {
-                let btndescription = document.createElement('span');
-                btndescription.className = 'btndescription';
-                btndescription.textContent = title;
-                button.appendChild(btndescription);
-            }
-        }
-        
-        // 确保按钮图标在描述文字之前
-        let icon = button.querySelector('i');
-        let desc = button.querySelector('.btndescription');
-        if (icon && desc) {
-            button.insertBefore(icon, desc);
-        }
+  const bg = initializeBackground();
+
+  function applyTheme() {
+    const mode = getEffectiveMode();
+    const theme = themeColors[mode];
+
+    if (bg) bg.style.background = theme.bgGradient;
+
+    document.querySelectorAll(".post-card").forEach(card => {
+      card.style.background = theme.cardBg;
+      card.style.border = theme.cardBorder;
+      card.style.backdropFilter = "blur(16px)";
+      card.style.webkitBackdropFilter = "blur(16px)";
+      card.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
+
+      const title = card.querySelector(".post-title");
+      const meta = card.querySelector(".post-meta");
+
+      if (title) title.style.color = theme.title;
+      if (meta) meta.style.color = theme.meta;
     });
-});
+
+    ["#header", "#footer"].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.style.color = mode === "dark" ? "#ddd" : "";
+    });
+  }
+
+  // 主题监听器
+  if (document.documentElement.getAttribute("data-color-mode") === "auto") {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+  }
+
+  new MutationObserver(applyTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-color-mode"]
+  });
+
+
+
+  function rebuildCards() {
+    // 查找所有可能的文章容器
+    const possibleSelectors = [
+      '.SideNav-item',
+      '.Box-row', 
+      '.d-flex',
+      '.listTitle',
+      '.Label',
+      '[class*="SideNav"]',
+      '[class*="Box"]',
+      '[class*="list"]',
+      'article',
+      '.post',
+      '[href*=".html"]'
+    ];
+    
+    possibleSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      if (elements.length > 0) {
+        if (elements.length <= 5) {
+          elements.forEach((el, i) => {
+            if (el.textContent && el.textContent.length < 100) {
+            }
+          });
+        }
+      }
+    });
+
+    // 查找包含 listTitle 的父元素
+    const listTitles = document.querySelectorAll('.listTitle');
+    if (listTitles.length > 0) {
+      listTitles.forEach((title, i) => {
+      });
+    }
+
+    let sideNavItems = document.querySelectorAll(".SideNav-item");
+    
+    // 如果没找到，尝试通过 listTitle 找父元素
+    if (sideNavItems.length === 0 && listTitles.length > 0) {
+      // 假设 listTitle 的父元素就是我们要找的容器
+      const parents = Array.from(listTitles).map(title => {
+        // 找到有href属性的祖先元素
+        let current = title.parentElement;
+        while (current && !current.getAttribute('href')) {
+          current = current.parentElement;
+          if (current === document.body) break;
+        }
+        return current;
+      }).filter(Boolean);
+      
+      if (parents.length > 0) {
+        sideNavItems = parents;
+      }
+    }
+    
+    if (sideNavItems.length === 0) {
+      setTimeout(rebuildCards, 1000);
+      return;
+    }
+
+
+    sideNavItems.forEach((card, i) => {
+      // 从href中提取文章标题作为备用方案
+      let title = card.querySelector(".listTitle")?.innerText;
+      if (!title) {
+        // 如果没有listTitle，从href中提取文件名作为标题
+        const href = card.getAttribute("href") || "";
+        const filename = href.split('/').pop()?.replace('.html', '') || "未命名文章";
+        title = filename.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
+      const link = card.getAttribute("href");
+      const labels = [...card.querySelectorAll(".Label")];
+      const time = labels.find(el => /^\d{4}/.test(el.textContent.trim()))?.textContent.trim() || "";
+
+      const tags = labels.filter(el => el.textContent.trim() !== time).map(el => {
+        const tag = el.textContent.trim();
+        const bg = el.style.backgroundColor || "#999";
+        const fg = getTextColor(bg);
+        return `<span class="post-tag" style="background-color:${bg};color:${fg}" data-tag="${tag}" onclick="handleTagClick(event, '${tag}')">${tag}</span>`;
+      }).join("");
+
+      const newCard = document.createElement("a");
+      newCard.href = link;
+      newCard.className = "post-card";
+      newCard.style.animationDelay = `${i * 60}ms`;
+      newCard.innerHTML = `
+        <div class="post-meta">${tags}<span class="post-date">${time}</span></div>
+        <h2 class="post-title">${title}</h2>
+      `;
+      card.replaceWith(newCard);
+    });
+
+    applyTheme();
+  }
+
+  // 增强的DOM准备检查
+  function whenReady(callback) {
+    if (document.readyState === 'complete') {
+      setTimeout(callback, 100);
+    } else if (document.readyState === 'interactive') {
+      setTimeout(callback, 300);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(callback, 200);
+      });
+      window.addEventListener('load', function() {
+        setTimeout(callback, 100);
+      });
+    }
+  }
+
+  // 执行主逻辑
+  whenReady(() => {
+    rebuildCards();
+    // 标记完成 - 放在最前面，避免重复执行
+    window.__TiengmingModernized = true;
+    console.log("🍏 TiengmingModern 插件加载完成");
+  });
+
+  // 页面可见性监听 - 简化逻辑，只处理样式重新应用
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && window.__TiengmingModernized) {
+      const existingCards = document.querySelector('.post-card');
+      const existingBg = document.querySelector('.herobgcolor');
+      
+      if (existingCards && !existingBg) {
+        initializeBackground();
+        applyTheme();
+      }
+    }
+  });
+
+})();
