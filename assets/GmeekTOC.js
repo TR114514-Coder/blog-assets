@@ -23,7 +23,7 @@ function createTOC() {
         tocElement.appendChild(link);
     });
     
-    tocElement.insertAdjacentHTML('beforeend', '<a class="toc-end" onclick="window.scrollTo({top:0,behavior: \'smooth\'});">Top</a>');
+    tocElement.insertAdjacentHTML('beforeend', '<a class="toc-end" onclick="window.scrollTo({top:0,behavior: \'smooth\'});">回到顶部</a>');
     contentContainer.prepend(tocElement);
 }
 
@@ -99,3 +99,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
     console.log("\n %c GmeekTOC Plugins https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#C333D0;color:#fff");
 });
+
