@@ -1,5 +1,5 @@
 // 定义字体URL和字体名称
-const fontUrl = 'https://blog-assets.traveler.dpdns.org/font/MiSans-Heavy.ttf';
+const fontUrl = 'https://gh-proxy.com/https://github.com/TR114514-Coder/blog-assets/raw/refs/heads/main/font/MiSans-Heavy.ttf';
 const fontName = 'CustomFont';
 
 // 创建字体face规则
