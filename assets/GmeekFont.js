@@ -1,24 +1,23 @@
-// 简洁版字体应用脚本
 (function() {
-  // 字体URL和名称
   const fontUrl = 'https://blog-assets.traveler.dpdns.org/font/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuZtammTggvWl0Qn.ttf';
   const fontName = 'CustomFont';
   
-  // 创建字体定义
   const style = document.createElement('style');
   style.textContent = `
     @font-face {
       font-family: '${fontName}';
       src: url('${fontUrl}') format('truetype');
       font-display: swap;
+      font-weight: 400; /* 明确指定字重 */
     }
     
+    /* 强制所有元素使用相同的字重 */
     * {
       font-family: '${fontName}', -apple-system, BlinkMacSystemFont, 
                    'Segoe UI', Roboto, sans-serif !important;
+      font-weight: 400 !important; /* 统一为普通粗细 */
     }
   `;
   
-  // 添加到页面
   document.head.appendChild(style);
 })();
