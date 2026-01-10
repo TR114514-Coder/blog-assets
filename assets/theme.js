@@ -46,13 +46,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // 创建样式元素
     let style = document.createElement("style");
     
-    // 毛玻璃样式
+    // 毛玻璃样式和body圆角
     if (CONFIG.enableGlassEffect) {
         style.innerHTML += `
             body {
                 backdrop-filter: blur(15px) saturate(180%);
                 -webkit-backdrop-filter: blur(15px) saturate(180%);
                 background: rgba(255, 255, 255, 0.1) !important;
+                margin: 30px auto;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                overflow: auto;
+                min-height: calc(100vh - 100px);
+                max-width: 90%;
             }
             .SideNav, .btn, .title-right .btn, .subnav-search-input {
                 backdrop-filter: blur(10px) saturate(180%);
@@ -64,6 +71,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: rgba(255, 255, 255, 0.25) !important;
                 border: 1px solid rgba(255, 255, 255, 0.2) !important;
             }
+            .SideNav {
+                border-radius: 15px;
+                min-width: unset;
+                background: rgba(255, 255, 255, 0.08) !important;
+            }
+            .SideNav-item:hover {
+                background-color: rgba(195, 228, 227, 0.3) !important;
+                border-radius: 10px;
+                transform: scale(1.02);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .SideNav-item { transition: 0.3s; }
         `;
     }
 
@@ -74,9 +93,51 @@ document.addEventListener('DOMContentLoaded', function() {
             html {
                 background: url('${backgroundUrl}') no-repeat center center fixed;
                 background-size: cover;
+                min-height: 100vh;
             }
         `;
     }
 
     document.head.appendChild(style);
+
+    // 右上角按钮处理
+    let topright_buttons = document.querySelectorAll(".title-right a.btn");
+    topright_buttons.forEach(button => {
+        let title = button.getAttribute('title');
+        if (title) {
+            let btndescription = document.createElement('span');
+            btndescription.className = 'btndescription';
+            btndescription.textContent = title;
+            button.appendChild(btndescription);
+        }
+        
+        // 统一按钮样式
+        button.style.cssText = `
+            display: inline-flex;
+            align-items: center;
+            width: auto;
+            height: 40px;
+            margin: 0 3px;
+            border-radius: 2em !important;
+            transition: 0.3s;
+        `;
+        
+        // 添加按钮描述样式
+        if (!document.querySelector('#btnDescStyle')) {
+            let btnDescStyle = document.createElement('style');
+            btnDescStyle.id = 'btnDescStyle';
+            btnDescStyle.innerHTML = `
+                div.title-right .btn .btndescription {
+                    display: none;
+                    margin-left: 3px;
+                    white-space: nowrap;
+                    font-weight: bold;
+                }
+                div.title-right .btn:hover .btndescription {
+                    display: inline;
+                }
+            `;
+            document.head.appendChild(btnDescStyle);
+        }
+    });
 });
