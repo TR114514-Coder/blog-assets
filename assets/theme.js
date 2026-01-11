@@ -77,12 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: calc(100% - 20px); /* 设置宽度，减去左右外边距 */
             }
             
-            /* 给SideNav border添加圆角 */
-            .SideNav.border {
-                border-radius: 10px;
-                overflow: hidden; /* 确保内部内容也适应圆角 */
-            }
-            
             /* markdown内容样式 */
             .markdown-body img {
                 border-radius: 10px;
@@ -101,11 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     min-height: calc(100vh - 16px);
                     max-width: calc(100% - 16px); /* 移动端使用百分比宽度 */
                     width: auto; /* 移动端恢复自动宽度 */
-                }
-                
-                /* 移动端调整SideNav border的圆角 */
-                .SideNav.border {
-                    border-radius: 8px;
                 }
                 
                 .markdown-body img {
