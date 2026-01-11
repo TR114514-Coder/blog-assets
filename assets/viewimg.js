@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     // 加载viewImage.js库
     let viewImage = document.createElement('script');
-    viewImage.src = 'https://blog.154451.xyz/lib/view-image.js';
+    viewImage.src = 'https://blog-assets.traveler.dpdns.org/lib/view-image.js';
     document.body.appendChild(viewImage);
 
     viewImage.onload = function() {
@@ -10,3 +10,4 @@ document.addEventListener("DOMContentLoaded", function() {
         document.body.appendChild(initial);
     };
 });
+
