@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://blog.liyifan.xyz/rss.xml
+Sitemap: https://b.traveler.dpdns.org/rss.xml
+
