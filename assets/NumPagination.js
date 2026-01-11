@@ -3,7 +3,7 @@
 var itemsPerPage = 15;
 
 //填入自定义页面的数量
-var custompages = 0;
+var custompages = 2;
 
 //---------------------------------------------------------------------
 
@@ -118,4 +118,5 @@ fetch(xmlUrl)
         updatePagination(totalPages, currentPage);
     })
     .catch(error => console.error('Error fetching XML:', error));
+
 
