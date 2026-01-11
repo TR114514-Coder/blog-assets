@@ -78,7 +78,6 @@ function updatePagination(totalPages, currentPage) {
     var style = document.createElement('style');
     style.textContent = `
         .pagination a.current-page {
-            font-weight: bold;
             color: red;
             text-decoration: underline;
             font-size: 18px;
@@ -118,5 +117,6 @@ fetch(xmlUrl)
         updatePagination(totalPages, currentPage);
     })
     .catch(error => console.error('Error fetching XML:', error));
+
 
 
