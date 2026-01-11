@@ -1,5 +1,5 @@
 // 字体URL
-const FONT_URL = 'https://blog-assets.traveler.dpdns.org/font/HarmonyOS_Sans_TC_Medium.ttf';
+const FONT_URL = 'https://blog-assets.traveler.dpdns.org/font/HarmonyOS_Sans_SC_Medium.ttf';
 
 const fontStyle = document.createElement('style');
 fontStyle.textContent = `
