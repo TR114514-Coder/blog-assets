@@ -59,7 +59,7 @@ function loadExternalResource(url, type) {
     cdnPath: 'https://blog-assets.traveler.dpdns.org/live2d_api/',
     cubism2Path: live2d_path + 'live2d.min.js',
     cubism5Path: 'https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js',
-    tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+    tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info'],
     logLevel: 'warn',
     drag: true,
   });
