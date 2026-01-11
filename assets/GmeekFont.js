@@ -1,5 +1,5 @@
 // 字体URL
-const FONT_URL = 'https://blog-assets.traveler.dpdns.org/font/MiSans-Medium.ttf';
+const FONT_URL = 'https://blog-assets.traveler.dpdns.org/font/Roboto1.ttf';
 
 const fontStyle = document.createElement('style');
 fontStyle.textContent = `
