@@ -9,7 +9,7 @@ fontStyle.textContent = `
   }
   
   * {
-    font-family: 'GlobalFont', sans-serif !important;
+    font-family: 'Font113332', sans-serif !important;
   }
 `;
 
